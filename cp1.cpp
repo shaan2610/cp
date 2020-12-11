@@ -58,15 +58,38 @@ int chkprm(int n){ int x=5,s=sqrt(n); if(n<2)return 0; if(n<4)return 1; if((n&1)
 //void dfs_cal(int i){ dad[1]=1; intime[i]=timer++; for(auto j: adj[i]){ if(j!=dad[i]){ dad[j]=i;dep[j]=dep[i]+1;dfs_cal(j);}} extime[i]=timer++;}
 //int prm[MAXS];                     //****SIEVE MOVES****
 //void sieve(){ f(i,MAXS) prm[i]=i; for(int i=4;i<MAXS;i+=2) prm[i]=2; for(int i=3;i<sqrt(MAXS);i+=2){ if(prm[i]==i){ for(int j=i*i;j<MAXS;j+=i) prm[j]=i; }}}
+char a[502][502];
+int res=0;
+int chk(int x,int y,int n,int m)
+{
+    if(x+1<)
+}
 void myth()
 {
-    
+    in(n);
+    in(m);
+    f(i,n)
+    {
+        f(j,m)
+            I a[i][j];
+    }
+    f(i,n)
+    {
+        f(j,m)
+        {
+            if(a[i][j]=='*')
+            {
+                res=0;
+                chk(i,j);
+            }
+        }
+    }
 }
 signed main()
 {
     boost
     int test_case=1;
-    //I test_case;
+    I test_case;
     while(test_case--)
     {
         myth();
