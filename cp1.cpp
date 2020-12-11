@@ -58,58 +58,19 @@ int chkprm(int n){ int x=5,s=sqrt(n); if(n<2)return 0; if(n<4)return 1; if((n&1)
 //void dfs_cal(int i){ dad[1]=1; intime[i]=timer++; for(auto j: adj[i]){ if(j!=dad[i]){ dad[j]=i;dep[j]=dep[i]+1;dfs_cal(j);}} extime[i]=timer++;}
 //int prm[MAXS];                     //****SIEVE MOVES****
 //void sieve(){ f(i,MAXS) prm[i]=i; for(int i=4;i<MAXS;i+=2) prm[i]=2; for(int i=3;i<sqrt(MAXS);i+=2){ if(prm[i]==i){ for(int j=i*i;j<MAXS;j+=i) prm[j]=i; }}}
-int t[400005]={0};
-void build(vi &a,int id,int l,int r)
-{
-    if(l>r)
-        return;
-    if(a[l]==a[r])
-        t[id]=a[l]*(r-l+1);
-    else
-    {
-        auto it=ub(a,(a[l]+a[r])/2);
-        it--;
-        int idx=it-a.begin();
-        build(a,2*id,l,idx);
-        build(a,2*id+1,idx+1,r);
-        t[id]=t[2*id]+t[2*id+1];
-    }
-}
 void myth()
 {
-    in(n);
-    in(q);
-    inp(a,n);
-    Si(a);
-    f(i,4*n+2)
-        t[i]=0;
-    build(a,1,0,n-1);
-    int ind=1;
-    set<int> s;
-    while(t[ind])
-    {
-        s.insert(t[ind]);
-        ind++;
-    }
-    while(q--)
-    {
-        in(x);
-        if(s.count(x))
-            P "Yes";
-        else
-            P "No";
-        P endl;
-    }
+    
 }
 signed main()
 {
     boost
     int test_case=1;
-    I test_case;
+    //I test_case;
     while(test_case--)
     {
         myth();
-        //P endl;
+        P endl;
     }
     TLE
     return 0;
