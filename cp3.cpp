@@ -59,7 +59,7 @@ int SUM(vi &a)
 		sum+=i;
 	return sum;
 }
-int chkprm(int n){ int x=5,s=sqrt(n); if(n<2)return 0; if(n<4)return 1; if((n&1)==0)return 0; if(n%3==0)return 0; while(x<=s){ if(n%x==0)return 0; x+=2; if(n%x==0)return 0; x+=4; } return 1;}
+//int chkprm(int n){ int x=5,s=sqrt(n); if(n<2)return 0; if(n<4)return 1; if((n&1)==0)return 0; if(n%3==0)return 0; while(x<=s){ if(n%x==0)return 0; x+=2; if(n%x==0)return 0; x+=4; } return 1;}
 //vi adj[MAXT];           //*****TREE MOVES*****
 //void dfs_cal(int i){ dad[1]=1; intime[i]=timer++; for(auto j: adj[i]){ if(j!=dad[i]){ dad[j]=i;dep[j]=dep[i]+1;dfs_cal(j);}} extime[i]=timer++;}
 #define MAXS 1000005
@@ -86,36 +86,33 @@ int solve(vi &a,int n)
     }
     Si(v);
     v.pb(-1);
-    int ans=0,cnt=0;
+    int ans=0,cnt1=0;
     f(i,n)
     {
-        cnt++;
+        cnt1++;
         if(v[i]!=v[i+1])
         {
-            int j=i;
-            ans=max(ans,cnt);
-			if(cnt%2==0)
-				ans1+=cnt;
-			if(cnt%2 and v[i]==1)
-				ans1+=cnt;
-            cnt=0;
+            ans=max(ans,cnt1);
+            if(cnt1%2 and v[i]==1)
+                ans1+=cnt1;
+            eif(cnt1%2==0)
+                ans1+=cnt1;
+            cnt1=0;
         }
     }
-	ans1=max(ans1,ans);
+    
     return ans;
 }
 void myth()
 {
-	/*			CONCEPT
-		The product of two numbers form a perfect square if
-		a=(x*x)*k1;
-		b=(y*y)*k2;
-		Condition : k1=k2
-		*/
     in(n);
 	inp(a,n);
+    int cnt=0;
+    for(auto i:a)
+        if(i==1)
+            cnt++;
     in(q);
-	ans1=0;
+    ans1=0;
     int ans=solve(a,n);
     while(q--)
     {

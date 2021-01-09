@@ -1,5 +1,5 @@
 #pragma GCC optimize("Ofast")
-#include <bits/stdc++.h>
+#include "bits/stdc++.h"
 using namespace std;
 #define f(i,n)          for(int i=0;i<n;i++)
 #define fr(i,a,b)       for(int i=a;i<=b;i++)
@@ -32,9 +32,9 @@ using namespace std;
 #define dec(x)          fixed<<setprecision(x)
 #define sz(x)           (x.empty() ? 0 : x.size())
 #define mi              map<int,int>
-#define bs(a,x)       	binary_search(all(a),x)
-#define MX(a)         	*(max_element(all(a)))
-#define MN(a)         	*(min_element(all(a)))
+#define bs(a,x)       binary_search(all(a),x)
+#define MX(a)         *(max_element(all(a)))
+#define MN(a)         *(min_element(all(a)))
 #define in(n)           int n;I n
 #define inp(a,n)        vi a(n);f(xxx,n) I a[xxx]
 #define mem(a)          memset(a, -1, sizeof(a))
@@ -52,91 +52,75 @@ int power(int b,int e){ if(e==0) return 1; if(e%2) return b*power(b*b,(e-1)/2); 
 int ncr(int n,int p){ int r=min(p,n-p),rf=1,ln=1; fr(i,1,r) rf=rf*i; f(i,r) ln=ln*(n-i); return ln/rf;}
 bool sbs(pii &a,pii &b){ return (a.S<b.S);}
 bool sbds(pii &a,pii &b){ return (a.S>b.S);}
-int SUM(vi &a)
-{
-	int sum=0;
-	for(auto i:a)
-		sum+=i;
-	return sum;
-}
+int SUM(vi &a,int n){ int sum=0; f(i,n) sum+=a[i]; return sum;}
 int chkprm(int n){ int x=5,s=sqrt(n); if(n<2)return 0; if(n<4)return 1; if((n&1)==0)return 0; if(n%3==0)return 0; while(x<=s){ if(n%x==0)return 0; x+=2; if(n%x==0)return 0; x+=4; } return 1;}
-//vi adj[MAXT];           //*****TREE MOVES*****
+#define MAXT 200005
+//vi adj[MAXT],dep(MAXT);           //*****TREE MOVES*****
 //void dfs_cal(int i){ dad[1]=1; intime[i]=timer++; for(auto j: adj[i]){ if(j!=dad[i]){ dad[j]=i;dep[j]=dep[i]+1;dfs_cal(j);}} extime[i]=timer++;}
-#define MAXS 1000005
-int prm[MAXS],ans1=0;                     //****SIEVE MOVES****
-void sieve(){ f(i,MAXS) prm[i]=i; for(int i=4;i<MAXS;i+=2) prm[i]=2; for(int i=3;i<sqrt(MAXS);i+=2){ if(prm[i]==i){ for(int j=i*i;j<MAXS;j+=i) prm[j]=i; }}}
-int solve(vi &a,int n)
+//int prm[MAXS];               
+      //****SIEVE MOVES****
+//void sieve(){ f(i,MAXS) prm[i]=i; for(int i=4;i<MAXS;i+=2) prm[i]=2; for(int i=3;i<sqrt(MAXS);i+=2){ if(prm[i]==i){ for(int j=i*i;j<MAXS;j+=i) prm[j]=i; }}}
+#define MAXN 200005
+int mom[MAXN],size[MAXN];
+int find(int x)
 {
-    vi v(n,1);
-    f(i,n)
-    {
-        int x=prm[a[i]],z=a[i];
-        while(z!=1)
-        {
-            int cnt=0;
-            while(z%x==0)
-            {
-                cnt++;
-                z/=x;
-            }
-            if(cnt%2)
-                v[i]*=x;
-            x=prm[z];
-        }
-    }
-    Si(v);
-    v.pb(-1);
-    int ans=0,cnt=0;
-    f(i,n)
-    {
-        cnt++;
-        if(v[i]!=v[i+1])
-        {
-            int j=i;
-            ans=max(ans,cnt);
-			if(cnt%2==0)
-				ans1+=cnt;
-			if(cnt%2 and v[i]==1)
-				ans1+=cnt;
-            cnt=0;
-        }
-    }
-	ans1=max(ans1,ans);
-    return ans;
+	if(mom[x]==x)
+		return x;
+	return mom[x]=find(mom[x]);
+}
+void mk(int x)
+{
+	mom[x]=x;
+	size[x]=1;
+}
+void jnt(int x,int y)
+{
+	int a=find(x),b=find(y);
+	if(a!=b)
+	{
+		if(size[a]>size[b])
+			swap(a,b);
+		mom[b]=a;
+		size[a]+=size[b];
+	}
+ 
 }
 void myth()
 {
-	/*			CONCEPT
-		The product of two numbers form a perfect square if
-		a=(x*x)*k1;
-		b=(y*y)*k2;
-		Condition : k1=k2
-		*/
     in(n);
-	inp(a,n);
-    in(q);
-	ans1=0;
-    int ans=solve(a,n);
-    while(q--)
+    fr(i,1,n)
+        mk(i);
+    in(m);
+    for(int i=0,u,v;i<m;i++)
     {
-        in(w);
-        if(not w)
-            P ans;
-        else
-            P ans1;
-        P endl;
+        cin>>u>>v;
+        jnt(u,v);
     }
+    mi m1;
+    fr(i,1,n)
+        m1[find(i)]++;
+    vi v;
+    for(auto i:m1)
+        v.pb(i.S);
+    int zz=sz(v);
+    vi sum(zz);
+    sum[zz-1]=v[zz-1];
+    for(int i=zz-2;i>=0;i--)
+        sum[i]=sum[i+1]+v[i];
+    int ans=0;
+    f(i,zz-1)
+        ans+=(v[i]*sum[i+1]);
+    P ans;
 }
 signed main()
 {
     boost
     int test_case=1;
-    sieve();
-    I test_case;
+    //I test_case;
     while(test_case--)
     {
         myth();
-        //P endl;
+        P endl;
     }
     TLE
     return 0;
