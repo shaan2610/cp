@@ -1,5 +1,5 @@
 #pragma GCC optimize("Ofast")
-#include <bits/stdc++.h>
+#include "bits/stdc++.h"
 using namespace std;
 #define f(i,n)          for(int i=0;i<n;i++)
 #define fr(i,a,b)       for(int i=a;i<=b;i++)
@@ -32,9 +32,9 @@ using namespace std;
 #define dec(x)          fixed<<setprecision(x)
 #define sz(x)           (x.empty() ? 0 : x.size())
 #define mi              map<int,int>
-#define bs(a,x)       	binary_search(all(a),x)
-#define MX(a)         	*(max_element(all(a)))
-#define MN(a)         	*(min_element(all(a)))
+#define bs(a,x)       binary_search(all(a),x)
+#define MX(a)         *(max_element(all(a)))
+#define MN(a)         *(min_element(all(a)))
 #define in(n)           int n;I n
 #define inp(a,n)        vi a(n);f(xxx,n) I a[xxx]
 #define mem(a)          memset(a, -1, sizeof(a))
@@ -52,97 +52,49 @@ int power(int b,int e){ if(e==0) return 1; if(e%2) return b*power(b*b,(e-1)/2); 
 int ncr(int n,int p){ int r=min(p,n-p),rf=1,ln=1; fr(i,1,r) rf=rf*i; f(i,r) ln=ln*(n-i); return ln/rf;}
 bool sbs(pii &a,pii &b){ return (a.S<b.S);}
 bool sbds(pii &a,pii &b){ return (a.S>b.S);}
-int SUM(vi &a)
-{
-	int sum=0;
-	for(auto i:a)
-		sum+=i;
-	return sum;
-}
+int SUM(vi &a,int n){ int sum=0; f(i,n) sum+=a[i]; return sum;}
 int chkprm(int n){ int x=5,s=sqrt(n); if(n<2)return 0; if(n<4)return 1; if((n&1)==0)return 0; if(n%3==0)return 0; while(x<=s){ if(n%x==0)return 0; x+=2; if(n%x==0)return 0; x+=4; } return 1;}
-//vi adj[MAXT];           //*****TREE MOVES*****
+#define MAXT 100005
+vi adj[MAXT],dep(MAXT);           //*****TREE MOVES*****
 //void dfs_cal(int i){ dad[1]=1; intime[i]=timer++; for(auto j: adj[i]){ if(j!=dad[i]){ dad[j]=i;dep[j]=dep[i]+1;dfs_cal(j);}} extime[i]=timer++;}
-#define MAXS 1000005
-int prm[MAXS];                     //****SIEVE MOVES****
-void sieve(){ f(i,MAXS) prm[i]=i; for(int i=4;i<MAXS;i+=2) prm[i]=2; for(int i=3;i<sqrt(MAXS);i+=2){ if(prm[i]==i){ for(int j=i*i;j<MAXS;j+=i) prm[j]=i; }}}
-int solve(vi &a,int n)
-{
-    vii v(n,{1,1});
-    f(i,n)
-        v[i].S=a[i];
-    f(i,n)
-    {
-        int x=prm[a[i]],z=a[i];
-        while(z!=1)
-        {
-            int cnt=0;
-            while(z%x==0)
-            {
-                cnt++;
-                z/=x;
-            }
-            if(cnt%2)
-                v[i].F*=x;
-            x=prm[z];
-        }
-    }
-    Si(v);
-    v.pb({-1,-1});
-    vi v1;
-    int prod=1,ans=0,cnt=0;
-    f(i,n)
-    {
-        prod*=v[i].S;
-        cnt++;
-        if(v[i].F!=v[i+1].F)
-        {
-            int j=i;
-            while(v[j].F==v[i].F)
-            {
-                v1.pb(prod);
-                j--;
-            }
-            prod=1;
-            ans=max(ans,cnt);
-            cnt=0;
-        }
-    }
-    a=v1;
-    return ans;
-}
+//int prm[MAXS];                     //****SIEVE MOVES****
+//void sieve(){ f(i,MAXS) prm[i]=i; for(int i=4;i<MAXS;i+=2) prm[i]=2; for(int i=3;i<sqrt(MAXS);i+=2){ if(prm[i]==i){ for(int j=i*i;j<MAXS;j+=i) prm[j]=i; }}}
 void myth()
 {
-    in(n);
-	inp(a,n);
-    in(q);
-    int ans=solve(a,n);
-    mi m1,m2;
-    for(auto i:a)
-        m1[i]++;
-    for(auto i:m1)
-        P i.F<<" "<<i.S<<endl;
-    P endl;
-    int ans1=solve(a,n);
-    for(auto i:a)
-        m1[i]++;
-    for(auto i:m1)
-        P i.F<<" "<<i.S<<endl;
-    P endl;
-    while(q--)
+    int n,m;
+    cin>>n>>m;
+    string s;
+    cin>>s;
+    vi v(n+1);
+    f(i,n)
+        v[i+1]=v[i]+(s[i]=='+' ? 1:-1);
+    vi prmn(n+1),prmx(n+1),sfmn(n+1),sfmx(n+1);
+    fr(i,1,n)
     {
-        in(w);
-        /*if(not w)
-            P ans;
-        else
-            P ans1;
-        P endl;*/
+        prmn[i]=min(prmn[i-1],v[i]);
+        prmx[i]=max(prmx[i-1],v[i]);
+    }
+    sfmn[n]=sfmx[n]=v[n];
+    for(int i=n-1;i>=0;i--)
+    {
+        sfmn[i]=min(sfmn[i+1],v[i]);
+        sfmx[i]=max(sfmx[i+1],v[i]);
+    }
+    f(i,m)
+    {
+        in(l);
+        in(r);
+        int mn=prmn[l-1],mx=prmx[l-1];
+        int sum=v[r]-v[l-1];
+        mn=min(mn,sfmn[r]-sum);
+        mx=max(mx,sfmx[r]-sum);
+        cout<<mx-mn+1<<endl;
     }
 }
 signed main()
 {
     boost
     int test_case=1;
-    sieve();
     I test_case;
     while(test_case--)
     {

@@ -5,12 +5,13 @@ using namespace std;
 void quicksort(vector<int> &v,int l,int r)
 {
     if(l<r)
-    {    int piv=v[r],idx=r;
+    {    int piv=v[r],idx=l;
         for(int i=l;i<r;i++)
         {
-            if(v[i]>piv)
-                swap(v[i],v[idx--]);
+            if(v[i]<piv)
+                swap(v[i],v[idx++]);
         }
+        swap(v[r],v[idx]);
             quicksort(v,l,idx-1);
             quicksort(v,idx+1,r);
     }
