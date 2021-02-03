@@ -1,5 +1,5 @@
 #pragma GCC optimize("Ofast")
-#include <bits/stdc++.h>
+#include "bits/stdc++.h"
 using namespace std;
 #define f(i,n)          for(int i=0;i<n;i++)
 #define fr(i,a,b)       for(int i=a;i<=b;i++)
@@ -32,88 +32,59 @@ using namespace std;
 #define dec(x)          fixed<<setprecision(x)
 #define sz(x)           (x.empty() ? 0 : x.size())
 #define mi              map<int,int>
-#define bs(a,x)       	binary_search(all(a),x)
-#define MX(a)         	*(max_element(all(a)))
-#define MN(a)         	*(min_element(all(a)))
+#define bs(a,x)       binary_search(all(a),x)
+#define MX(a)         *(max_element(all(a)))
+#define MN(a)         *(min_element(all(a)))
 #define in(n)           int n;I n
-#define inp(a,n)        vi a(n);f(xxx,n) I a[xxx]
+#define inp(a,n)        vi a(n+1);fr(xxx,1,n) I a[xxx]
 #define mem(a)          memset(a, -1, sizeof(a))
 #define ub(v,x)         std::upper_bound(all(v), x)     //first value greater than x
 #define lb(v,x)         std::lower_bound(all(v), x)     //first value greater than or equal to x
 #define boost           ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
 #define TLE             cerr<<endl<<"Time Elasped : "<<1.0 * clock() / CLOCKS_PER_SEC<<endl;
-#define MAXN 200005
-int dp[MAXN][20];
-vi logg(MAXN);
-void solve()
+//vi fac(MAXN);
+//void fact(int x){ fac[0] = 1; fr(i,1,MAXN) fac[i] = fac[i-1]*i%x; }
+int invmod(int x, int n, int mod){ if(n==0)  return 1%mod; int half = invmod(x,n/2,mod);half = (half*half)%mod; if(n%2==1)  half = (half*(x%mod))%mod; return half;}
+int bin(vi &a,int l,int r,int x){ if(l<=r){ int m=l+(r-l)/2; if(a[m]==x) return m; else if (a[m]>x) return bin(a,l,m-1,x); else return bin(a,m+1,r,x);} else return -1;}
+int power(int b,int e,int m){ if(e==0) return 1; if(e%2) return b*power(b*b%m,(e-1)/2,m)%m; else return power(b*b%m,e/2,m);}
+int power(int b,int e){ if(e==0) return 1; if(e%2) return b*power(b*b,(e-1)/2); else return power(b*b,e/2);}
+//int ncr(int n, int r, int x) { if (r==0) return 1; return (fac[n]* power(fac[r], x-2, x) % x * power(fac[n-r], x-2, x) % x) % x; }
+int ncr(int n,int p){ int r=min(p,n-p),rf=1,ln=1; fr(i,1,r) rf=rf*i; f(i,r) ln=ln*(n-i); return ln/rf;}
+bool sbs(pii &a,pii &b){ return (a.S<b.S);}
+bool sbds(pii &a,pii &b){ return (a.S>b.S);}
+int SUM(vi &a,int n){ int sum=0; f(i,n) sum+=a[i]; return sum;}
+int chkprm(int n){ int x=5,s=sqrt(n); if(n<2)return 0; if(n<4)return 1; if((n&1)==0)return 0; if(n%3==0)return 0; while(x<=s){ if(n%x==0)return 0; x+=2; if(n%x==0)return 0; x+=4; } return 1;}
+#define MAXT 100005
+vi adj[MAXT],dep(MAXT);           //*****TREE MOVES*****
+//void dfs_cal(int i){ dad[1]=1; intime[i]=timer++; for(auto j: adj[i]){ if(j!=dad[i]){ dad[j]=i;dep[j]=dep[i]+1;dfs_cal(j);}} extime[i]=timer++;}
+//int prm[MAXS];                     //****SIEVE MOVES****
+//void sieve(){ f(i,MAXS) prm[i]=i; for(int i=4;i<MAXS;i+=2) prm[i]=2; for(int i=3;i<sqrt(MAXS);i+=2){ if(prm[i]==i){ for(int j=i*i;j<MAXS;j+=i) prm[j]=i; }}}
+max_heapify(vi &a,int n,int i)
 {
-    fr(i,2,MAXN-1)
-        logg[i]=logg[i/2]+1;
-}
-void sparse(vi &v)
-{
-    int n=sz(v);
-    f(i,n)
-        dp[i][0]=v[i];
-    fr(i,1,19)
+    int lf=2*i,rt=2*i+1,mx=i;
+    if(lf<n and a[lf]>a[mx])
+        mx=lf;
+    if(rt<n and a[rt]>a[mx])
+        mx=rt;
+    if(mx!=i)
     {
-        f(j,n)
-        {
-            if(j+(1<<i)<=n)
-                dp[j][i]=max(dp[j][i-1],dp[j+(1<<(i-1))][i-1]);
-            else
-                break;
-        }
-    }
-}
-int minquery(int l,int r)
-{
-    l--;
-    r--;
-    if(l>r)
-        return -1;
-    int x=logg[r-l+1];
-    return max(dp[l][x],dp[r-(1<<x)+1][x]);
-}
-int sumquery(int l,int r)
-{
-    if(l>r)
-        return -1;
-    int sum=0;
-    l--;
-    r--;
-    while(l<=r)
-    {
-        int x=logg[r-l+1];
-        sum+=dp[l][x];
-        l+=(1<<x);
-    }
-    return sum;
-}
-void myth()
-{
-    in(n);
-    inp(a,n);
-    sparse(a);
-    in(q);
-    f(i,q)
-    {
-        in(l);
-        in(r);
-        cout<<query(l,r)<<endl;
+        swap(a[mx],a[i]);
+        max_heapify(a,n,mx);
     }
 }
 signed main()
 {
     boost
-    int test_case=1;
-    //I test_case;
-    solve();
-    while(test_case--)
+    int n;
+    cin>>n;
+    vi a(n);
+    for(auto &i:a)
+        cin>>i;
+    for(i=n/2 -1;i>=0;i--)
+        max_heapify(a,n,i);
+    for(int i=n-1;i>=0;i--)
     {
-        myth();
-        //P endl;
+        
     }
-    TLE
     return 0;
 }

@@ -1,5 +1,5 @@
 #pragma GCC optimize("Ofast")
-#include <bits/stdc++.h>
+#include "bits/stdc++.h"
 using namespace std;
 #define f(i,n)          for(int i=0;i<n;i++)
 #define fr(i,a,b)       for(int i=a;i<=b;i++)
@@ -42,90 +42,97 @@ using namespace std;
 #define lb(v,x)         std::lower_bound(all(v), x)     //first value greater than or equal to x
 #define boost           ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
 #define TLE             cerr<<endl<<"Time Elasped : "<<1.0 * clock() / CLOCKS_PER_SEC<<endl;
-#define MAXN 200005
-int dp[MAXN][20];
-vi logg(MAXN);
-void solve()
+#define N 100005
+vi adj[N],dad(N),dep(N),pwr2(15),logg2(N);
+int dp[N][15],dp1[N][15];
+void calc()
 {
-    fr(i,2,MAXN-1)
-        logg[i]=logg[i/2]+1;
+    pwr2[0]=1;
+    for(int i=1;i<15;i++)
+        pwr2[i]=pwr2[i-1]*2;
+    for(int i=2;i<N;i++)
+        logg2[i]=1+logg2[i/2];
+        
 }
-void sparse(vi &v)
+int kth(int x,int k)
 {
-    int n=sz(v);
-    f(i,n)
-        dp[i][0]=v[i];
-    fr(i,1,19)
+    int z=logg2[k];
+    int ans=x;
+    while(k)
     {
-        f(j,n)
+        ans=dp[ans][z];
+        k-=pwr2[z];
+    }
+    return ans;
+}
+void dfs1(int x,int xd)
+{
+    for(auto i:adj[x])
+    {
+        if(i!=xd)
         {
-            if(j+(1<<i)<=n)
-            {
-                //dp[j][i]=max(dp[j][i-1],dp[j+(1<<(i-1))][i-1]);   //For min/max
-                //dp[i][j]=dp[j][i-1]+dp[j+(1<<(i-1))][i-1];        //For sum
-            }
-            else
-                break;
+            dep[i]=dep[x]+1;
+            dfs1(i,x);
         }
     }
 }
-int minquery(int l,int r)
+void dfs2(int x,int xd)
 {
-    l--;
-    r--;
-    if(l>r)
-        return -1;
-    int x=logg[r-l+1];
-    return max(dp[l][x],dp[r-(1<<x)+1][x]);
-}
-int sumquery(int l,int r)
-{
-    if(l>r)
-        return -1;
-    int sum=0;
-    l--;
-    r--;
-    while(l<=r)
+    for(auto i:adj[x])
     {
-        int x=logg[r-l+1];
-        sum+=dp[l][x];
-        l+=(1<<x);
+        if(i!=xd)
+        {
+            
+        }
     }
-    return sum;
-}
-int SUM(vi &a,int l,int r)
-{
-    l--;
-    r--;
-    int sum=0;
-    fr(i,l,r)
-        sum+=a[i];
-    return sum;
 }
 void myth()
 {
-    in(n);
-    inp(a,n);
-    sparse(a);
-    in(q);
-    f(i,q)
+    int n;
+    cin>>n;
+    for(int i=1,u;i<=n;i++)
     {
-        in(l);
-        in(r);
-        cout<<sumquery(l,r)<<" "<<SUM(a,l,r)<<endl;;
+        cin>>u;
+        dad[i]=u;
+        if(u)
+        {
+            adj[i].pb(u);
+            adj[u].pb(i);
+        }
+    }
+    
+    for(int i=1;i<=n;i++)
+    {
+        dp[i][0]=dad[i];
+        dp1[j][0]=sz(adj[j])-(dad[i]!=0);
+        if(not dad[i])
+            dfs1(i,0);
+    }
+    for(int i=1;i<15;i++)
+    {
+        for(int j=1;j<=n;j++)
+        {
+            if(pwr2[j]<=dep[j])
+                dp[j][i]=dp[dp[j][i-1]][i-1];
+        }
+    }
+    for(int i=1;i<=n;i++)
+    {
+        if(not dad[i])
+            dfs2(i,0);
     }
 }
 signed main()
 {
-    boost
     int test_case=1;
-    //I test_case;
-    solve();
+    //cin>>test_case;
+    calc();
+    //sieve();
+    //solve();
     while(test_case--)
     {
         myth();
-        //P endl;
+        cout<<endl;
     }
-    TLE
     return 0;
 }

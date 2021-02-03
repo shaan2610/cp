@@ -42,89 +42,27 @@ using namespace std;
 #define lb(v,x)         std::lower_bound(all(v), x)     //first value greater than or equal to x
 #define boost           ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
 #define TLE             cerr<<endl<<"Time Elasped : "<<1.0 * clock() / CLOCKS_PER_SEC<<endl;
-#define MAXN 200005
-int dp[MAXN][20];
-vi logg(MAXN);
-void solve()
-{
-    fr(i,2,MAXN-1)
-        logg[i]=logg[i/2]+1;
-}
-void sparse(vi &v)
-{
-    int n=sz(v);
-    f(i,n)
-        dp[i][0]=v[i];
-    fr(i,1,19)
-    {
-        f(j,n)
-        {
-            if(j+(1<<i)<=n)
-            {
-                //dp[j][i]=max(dp[j][i-1],dp[j+(1<<(i-1))][i-1]);   //For min/max
-                //dp[i][j]=dp[j][i-1]+dp[j+(1<<(i-1))][i-1];        //For sum
-            }
-            else
-                break;
-        }
-    }
-}
-int minquery(int l,int r)
-{
-    l--;
-    r--;
-    if(l>r)
-        return -1;
-    int x=logg[r-l+1];
-    return max(dp[l][x],dp[r-(1<<x)+1][x]);
-}
-int sumquery(int l,int r)
-{
-    if(l>r)
-        return -1;
-    int sum=0;
-    l--;
-    r--;
-    while(l<=r)
-    {
-        int x=logg[r-l+1];
-        sum+=dp[l][x];
-        l+=(1<<x);
-    }
-    return sum;
-}
-int SUM(vi &a,int l,int r)
-{
-    l--;
-    r--;
-    int sum=0;
-    fr(i,l,r)
-        sum+=a[i];
-    return sum;
-}
+int chkprm(int n){ int x=5,s=sqrt(n); if(n<2)return 0; if(n<4)return 1; if((n&1)==0)return 0; if(n%3==0)return 0; while(x<=s){ if(n%x==0)return 0; x+=2; if(n%x==0)return 0; x+=4; } return 1;}
+vi prm;
 void myth()
 {
-    in(n);
-    inp(a,n);
-    sparse(a);
-    in(q);
-    f(i,q)
-    {
-        in(l);
-        in(r);
-        cout<<sumquery(l,r)<<" "<<SUM(a,l,r)<<endl;;
-    }
+    in(z);
+    int x=ub(prm,z)-prm.begin();
+    int y=lb(prm,prm[x]+z)-prm.begin();
+    P prm[x]*prm[y];
 }
 signed main()
 {
     boost
     int test_case=1;
-    //I test_case;
-    solve();
+    I test_case;
+    fr(i,2,30000)
+        if(chkprm(i))
+            prm.pb(i);
     while(test_case--)
     {
         myth();
-        //P endl;
+        P endl;
     }
     TLE
     return 0;

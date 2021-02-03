@@ -1,5 +1,5 @@
 #pragma GCC optimize("Ofast")
-#include "bits/stdc++.h"
+#include <bits/stdc++.h>
 using namespace std;
 #define f(i,n)          for(int i=0;i<n;i++)
 #define fr(i,a,b)       for(int i=a;i<=b;i++)
@@ -9,7 +9,7 @@ using namespace std;
 #define mp              make_pair
 #define ppb             pop_back()
 #define L               length()
-#define endl            "\n"
+//#define endl            "\n"
 #define all(v)          v.begin(), v.end()
 #define vii             vector<pair<int,int> >
 #define pii             pair<int,int>
@@ -42,13 +42,14 @@ using namespace std;
 #define lb(v,x)         std::lower_bound(all(v), x)     //first value greater than or equal to x
 #define boost           ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
 #define TLE             cerr<<endl<<"Time Elasped : "<<1.0 * clock() / CLOCKS_PER_SEC<<endl;
-//vi fac(MAXN);
-//void fact(int x){ fac[0] = 1; fr(i,1,MAXN) fac[i] = fac[i-1]*i%x; }
+#define MAXN 1005
+vi fac(MAXN);
+void fact(int x){ fac[0] = 1; fr(i,1,MAXN-1) fac[i] = fac[i-1]*i%x; }
 int invmod(int x, int n, int mod){ if(n==0)  return 1%mod; int half = invmod(x,n/2,mod);half = (half*half)%mod; if(n%2==1)  half = (half*(x%mod))%mod; return half;}
 int bin(vi &a,int l,int r,int x){ if(l<=r){ int m=l+(r-l)/2; if(a[m]==x) return m; else if (a[m]>x) return bin(a,l,m-1,x); else return bin(a,m+1,r,x);} else return -1;}
 int power(int b,int e,int m){ if(e==0) return 1; if(e%2) return b*power(b*b%m,(e-1)/2,m)%m; else return power(b*b%m,e/2,m);}
 int power(int b,int e){ if(e==0) return 1; if(e%2) return b*power(b*b,(e-1)/2); else return power(b*b,e/2);}
-//int ncr(int n, int r, int x) { if (r==0) return 1; return (fac[n]* power(fac[r], x-2, x) % x * power(fac[n-r], x-2, x) % x) % x; }
+int ncr(int n, int r, int x) { if (r==0) return 1; return (fac[n]* power(fac[r], x-2, x) % x * power(fac[n-r], x-2, x) % x) % x; }
 int ncr(int n,int p){ int r=min(p,n-p),rf=1,ln=1; fr(i,1,r) rf=rf*i; f(i,r) ln=ln*(n-i); return ln/rf;}
 bool sbs(pii &a,pii &b){ return (a.S<b.S);}
 bool sbds(pii &a,pii &b){ return (a.S>b.S);}
@@ -59,82 +60,29 @@ int SUM(vi &a)
 		sum+=i;
 	return sum;
 }
-//int chkprm(int n){ int x=5,s=sqrt(n); if(n<2)return 0; if(n<4)return 1; if((n&1)==0)return 0; if(n%3==0)return 0; while(x<=s){ if(n%x==0)return 0; x+=2; if(n%x==0)return 0; x+=4; } return 1;}
-//vi adj[MAXT];           //*****TREE MOVES*****
-//void dfs_cal(int i){ dad[1]=1; intime[i]=timer++; for(auto j: adj[i]){ if(j!=dad[i]){ dad[j]=i;dep[j]=dep[i]+1;dfs_cal(j);}} extime[i]=timer++;}///#define MAXS 1000005
-// #define MAXS 1000095
-// int prm[MAXS],ans1=0;                     //****SIEVE MOVES****
-// vi zz;
-// void sieve(){ f(i,MAXS) prm[i]=i; for(int i=4;i<MAXS;i+=2) prm[i]=2; for(int i=3;i<sqrt(MAXS);i+=2){ if(prm[i]==i){ for(int j=i*i;j<MAXS;j+=i) prm[j]=i; }}}
-// void solve()
-// {
-//     for(int i=2;i<MAXS-2;i++)
-//     {
-//         if(prm[i]==i and prm[i+2]==(i+2))
-//             zz.pb(i);
-//     }
-// }
+
 void myth()
 {
-    int n,mex;
-    cin>>n;
-    vi cnt(n+2),a(n),st,en;
+    int n,k;
+    cin>>n>>k;
+    vector<int> a(n);
     for(auto &i:a)
-    {
         cin>>i;
-        cnt[i]++;
-    }
-    for(int i=0;i<n+2;i++)
+    sort(a.begin(),a.end(),greater<int>());
+    int cnt=0,num=a[k-1];
+    int cnt1=0;
+    for(int i=k-1;i>=0;i--)
     {
-        if(not cnt[i])
-        {
-            mex=i;
-            break;
-        }
+        if(a[i]==num)
+            cnt++;
     }
-    if(not mex)
+    for(auto i:a)
     {
-        int ans=((n-1)*n)/2;
-        cout<<ans+1;
-        return;
+        if(i==num)
+            cnt1++;
     }
-    set<int> s;
-    for(int i=0;i<n;i++)
-    {
-        if(a[i]<mex)
-        {
-            if(not sz(s))
-                st.pb(i);
-            s.insert(a[i]);
-        }
-        if(sz(s)==mex)
-        {
-            en.pb(i);
-            s.clear();
-        }
-    }
-    int z=sz(en);
-    en.pb(n-1);
-    if(sz(st)!=z)
-        st.ppb;
-    int dp[n],suff[n+1];
-    suff[n]=0;
-    for(int i=n-1;i>=0;i--)
-    {
-        auto it=lb(st,i);
-        if(it==st.end())
-        {
-            dp[i]=0;
-            suff[i]=suff[i+1]+dp[i];
-            continue;
-        }
-        int idx=it-st.begin();
-        dp[i]=1+suff[en[idx]+1];
-        suff[i]=suff[i+1]+dp[i];
-        dp[i]%=fk;
-        suff[i]%=fk;
-    }
-    cout<<dp[0];
+    //cout<<2;
+    cout<<ncr(cnt1,cnt,fk);
 }
 signed main()
 {
@@ -142,6 +90,7 @@ signed main()
     cin>>test_case;
     //sieve();
     //solve();
+    fact(fk);
     while(test_case--)
     {
         myth();
