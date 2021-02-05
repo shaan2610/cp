@@ -76,16 +76,7 @@ void dfs1(int x,int xd)
         }
     }
 }
-void dfs2(int x,int xd)
-{
-    for(auto i:adj[x])
-    {
-        if(i!=xd)
-        {
-            
-        }
-    }
-}
+int l[N][]
 void myth()
 {
     int n;
@@ -119,7 +110,7 @@ void myth()
     for(int i=1;i<=n;i++)
     {
         if(not dad[i])
-            dfs2(i,0);
+            dfs2(i,0,j);
     }
 }
 signed main()
