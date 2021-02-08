@@ -15,29 +15,69 @@ int power(int b,int e,int m)
     else 
         return power(b*b%m,e/2,m);
 }
+int nc2(int n)
+{
+    return (n*(n-1))/2;
+}
 signed main()
 {
     int test_case=1;
     //cin>>test_case;
+    //sieve();
+    // for(int i=1;i<MAXS;i++)
+    //     prime[prm[i]].push_back(i);
     while(test_case--)
     {
-        int n,d;
-        cin>>n>>d;
-        int ans=0;
-        vi a(n);
-        for(auto &i:a)
-            cin>>i;
-        sort(a.begin(),a.end());
-        for(int i=0;i<n;i++)
+        int k,p,num=-1;
+        cin>>k>>p;
+        if(k==1)
         {
-            auto it=lower_bound(a.begin(),a.end(),a[i]+d);
-            if(it==a.end() or *it != a[i]+d)
-                continue;
-            int diff=(it-a.begin())-i;
-            ans+=power(2,diff-1,fk);
-            ans%=fk;
+            cout<<1;
+            return 0;
         }
-        cout<<ans%fk;
+        while(k%2==0)
+        {
+            num=max(num,2ll);
+            k/=2;
+        }
+        for(int i=3;i<=sqrt(k);i+=2)
+        {
+            while(k%i==0)
+            {
+                num=max(num,i);
+                k/=i;
+            }
+        }
+        if(k>2)
+            num=max(num,k);
+        k=num;
+        int mn=1,mx=k*p,ans=1;
+        while(mx>=mn)
+        {
+            if(mx==mn)
+            {
+                ans=mx;
+                break;
+            }
+            else
+            {
+                int mid=(mn+mx)/2;
+                int sum=0;
+                int prod=k;
+                int z=mid/prod;
+                while(z)
+                {
+                    sum+=z;
+                    prod*=k;
+                    z=mid/prod;
+                }
+                if(sum>=p)
+                    mx=mid;
+                else
+                    mn=mid+1;
+            }
+        }
+        cout<<ans;
     }
     return 0;
 }
