@@ -98,12 +98,12 @@ vector<Point> combine(vector<Point> a, vector<Point> b) {
         ret.push_back(a[ind]); 
     } 
 
-    ind = lowerb; 
-    ret.push_back(b[lowerb]); 
+    ind = lowerb;
+    ret.push_back(b[lowerb]);
     while (ind != upperb) 
     { 
-        ind = (ind+1)%n2; 
-        ret.push_back(b[ind]); 
+        ind = (ind+1)%n2;
+        ret.push_back(b[ind]);
     } 
     return ret; 
 } 
@@ -112,7 +112,7 @@ bool checkAbove(Point p, Point i, Point q) {
     int val = (q.x - p.x) * (i.y - p.y) - (i.x - p.x) * (q.y - p.y); 
     return (val > 0);
 } 
-vector<Point> bruteHull(vector<Point> a) { 
+vector<Point> bruteforce(vector<Point> a) { 
     vector<Point> hull; 
     int l = 0, n = a.size(); 
     for (int i = 1; i < n; i++) {
@@ -147,7 +147,7 @@ vector<Point> bruteHull(vector<Point> a) {
 } 
 
 vector<Point> divide(vector<Point> a) { 
-    if (a.size() <= 5) return bruteHull(a); 
+    if (a.size() <= 5) return bruteforce(a); 
 
     vector<Point> left, right; 
 
