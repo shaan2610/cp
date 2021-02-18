@@ -65,29 +65,57 @@ int top(int x,int y)
         return x/y +1;
     return x/y;
 }
+int chksqr(int x)
+{
+    int z=sqrt(x);
+    if(z*z==x)
+        return z;
+    else
+        return inf;
+}
+//vi dep(105);
+
 void myth()
 {
     int n;
     cin>>n;
-    vi dp(n+1);
-    for(int i=1;i<=6;i++)
-        dp[i]=1;
-    for(int i=2;i<=n;i++)
+    inp(a,n);
+    if(n==1)
     {
-        for(int j=1;j<=6;j++)
-        {
-            if(i-j>0)
-                dp[i]+=dp[i-j];
-        }
-        dp[i]%=fk;
+        cout<<1;
+        return;
     }
-    cout<<dp[n];
+    vii v;
+    v.pb({0,0});
+    for(int i=1;i<=n;i++)
+        v.pb({a[i],i});
+    Si(v);
+    v.pb({0,0});
+    vi sum(n+1),ans(n+1);
+    for(int i=1;i<=n;i++)
+        sum[i]=sum[i-1]+v[i].F;
+    for(int i=n;i>=1;i--)
+    {
+        if(sum[i]>=v[i+1].F)
+            ans[v[i].S]++;
+        else
+            break;
+    }
+    set<int> s;
+    for(int i=1;i<=n;i++)
+    {
+        if(ans[i])
+            s.insert(i);
+    }
+    cout<<sz(s)<<endl;
+    for(auto i:s)
+        cout<<i<<" ";
 }
 signed main()
 {
     boost
     int test_case=1;
-    //cin>>test_case;
+    cin>>test_case;
     while(test_case--)
     {
         myth();

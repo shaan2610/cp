@@ -9,7 +9,7 @@ using namespace std;
 #define mp              make_pair
 #define ppb             pop_back()
 #define L               length()
-#define endl            "\n"
+//#define endl            "\n"
 #define all(v)          v.begin(), v.end()
 #define vii             vector<pair<int,int> >
 #define pii             pair<int,int>
@@ -52,7 +52,7 @@ int power(int b,int e){ if(e==0) return 1; if(e%2) return b*power(b*b,(e-1)/2); 
 int ncr(int n,int p){ int r=min(p,n-p),rf=1,ln=1; fr(i,1,r) rf=rf*i; f(i,r) ln=ln*(n-i); return ln/rf;}
 bool sbs(pii &a,pii &b){ return (a.S<b.S);}
 bool sbds(pii &a,pii &b){ return (a.S>b.S);}
-int SUM(vi &a,int n){ int sum=0; f(i,n) sum+=a[i]; return sum;}
+int SUM(vi &a){ int sum=0; for(auto i:a) sum+=i; return sum;}
 int chkprm(int n){ int x=5,s=sqrt(n); if(n<2)return 0; if(n<4)return 1; if((n&1)==0)return 0; if(n%3==0)return 0; while(x<=s){ if(n%x==0)return 0; x+=2; if(n%x==0)return 0; x+=4; } return 1;}
 // #define MAXT 100005
 // vi adj[MAXT],dep(MAXT);           //*****TREE MOVES*****
@@ -65,60 +65,39 @@ int top(int x,int y)
         return x/y +1;
     return x/y;
 }
+int solve(int i,int j)
+{
+    if(i==j)
+        return i;
+    int mid=(i+j)/2;
+    cout<<"? "<<i<<" "<<j<<endl;
+    int x;
+    cin>>x;
+    if(j==i+1)
+        return i+j-x;
+    cout<<"? "<<i<<" "<<mid<<endl;
+    int x1;
+    cin>>x1;
+    if(x==x1)
+        return solve(i,mid);
+    else
+        return solve(mid+1,j);
+}
 void myth()
 {
     int n;
     cin>>n;
-    if(n%2)
-    {
-        vi v;
-        int x=n/2,tot=n-1;
-        for(int i=1;i<=n-1;i++)
-        {
-            for(int j=1;j<=tot;j++)
-            {
-                if(j<=x)
-                    v.pb(1);
-                else
-                    v.pb(-1);
-            }
-            tot--;
-        }
-        for(auto i:v)
-            cout<<i<<" ";
-        return;
-    }
-    else
-    {
-        vi v;
-        int x=(n-1)/2,tot=n-1;
-        for(int i=1;i<=n-1;i++)
-        {
-            for(int j=1;j<=tot;j++)
-            {
-                if(j<=x)
-                    v.pb(1);
-                eif(j==x+1)
-                    v.pb(0);
-                else
-                    v.pb(-1);
-            }
-            tot--;
-        }
-        for(auto i:v)
-            cout<<i<<" ";
-        return;
-    }
+    cout<<"! "<<solve(1,n)<<endl;
 }
 signed main()
 {
     boost
     int test_case=1;
-    cin>>test_case;
+    //cin>>test_case;
     while(test_case--)
     {
         myth();
-        cout<<'\n';
+        //cout<<'\n';
     }
     TLE
     return 0;
