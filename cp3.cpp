@@ -59,35 +59,102 @@ int chkprm(int n){ int x=5,s=sqrt(n); if(n<2)return 0; if(n<4)return 1; if((n&1)
 //void dfs_cal(int i){ dad[1]=1; intime[i]=timer++; for(auto j: adj[i]){ if(j!=dad[i]){ dad[j]=i;dep[j]=dep[i]+1;dfs_cal(j);}} extime[i]=timer++;}
 //int prm[MAXS];                     //****SIEVE MOVES****
 //void sieve(){ f(i,MAXS) prm[i]=i; for(int i=4;i<MAXS;i+=2) prm[i]=2; for(int i=3;i<sqrt(MAXS);i+=2){ if(prm[i]==i){ for(int j=i*i;j<MAXS;j+=i) prm[j]=i; }}}
+#define N 1000005
+
+vi a(N),adj[N],sub(N);
+int val[N][2],n;
+
+
 int top(int x,int y)
 {
     if(x%y)
         return x/y +1;
     return x/y;
 }
-int solve(int i,int j)
+
+void dfs(int x,int xd)
 {
-    if(i==j)
-        return i;
-    int mid=(i+j)/2;
-    cout<<"? "<<i<<" "<<j<<endl;
-    int x;
-    cin>>x;
-    if(j==i+1)
-        return i+j-x;
-    cout<<"? "<<i<<" "<<mid<<endl;
-    int x1;
-    cin>>x1;
-    if(x==x1)
-        return solve(i,mid);
-    else
-        return solve(mid+1,j);
+    sub[x]=1;
+    for(auto i:adj[x])
+    {
+        if(i!=xd)
+        {
+            dfs(i,x);
+            sub[x]+=sub[i];
+        }
+    }
 }
+
+void dfs1(int x,int xd)
+{
+    val[x][0]=-a[x];
+    val[x][1]=a[x];
+    for(auto i:adj[x])
+    {
+        if(i!=xd)
+        {
+            dfs1(i,x);
+            val[x][0]+=val[i][1];
+            val[x][1]+=val[i][0];
+        }
+    }
+}
+// -20 
+void dfs2(int x,int xd)
+{
+    for(auto i:adj[x])
+    {
+        if(i!=xd)
+        {
+            int var1=val[x][1],var0=val[x][0];
+            var1-=val[i][0];
+            var0-=val[i][1];
+            var1-=a[x];
+            var0+=a[x];
+            var1+=((a[x]/sub[x])*(sub[x]-sub[i]));
+            var0-=((a[x]/sub[x])*(sub[x]-sub[i]));
+            var0+=((a[i]/sub[i])*n);
+            var1-=((a[i]/sub[i])*n);
+            val[i][0]+=a[i];
+            val[i][1]-=a[i];
+            val[i][0]+=var1;
+            val[i][1]+=var0;
+            dfs2(i,x);
+        }
+    }
+}
+
 void myth()
 {
-    int n;
     cin>>n;
-    cout<<"! "<<solve(1,n)<<endl;
+    for(int i=1;i<=n;i++)
+        cin>>a[i];
+    for(int i=0,x,y;i<n-1;i++)
+    {
+        cin>>x>>y;
+        adj[x].pb(y);
+        adj[y].pb(x);
+    }
+    
+    dfs(1,0);
+    
+    for(int i=1;i<=n;i++)
+    {
+        a[i]*=sub[i];
+        a[i]%=fk;
+    }
+    
+    dfs1(1,0);
+    
+    dfs2(1,0);
+    
+    int ans=0;
+    for(int i=1;i<=n;i++)
+    {
+        ans+=val[i][1];
+        ans%=fk;
+    }
+    cout<<ans;
 }
 signed main()
 {

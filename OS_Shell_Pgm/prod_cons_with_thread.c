@@ -54,7 +54,7 @@ void *consumer(void *arg) {
         pthread_attr_t attr;
         pthread_attr_init(&attr);
         pthread_create(&tid, &attr, calc, NULL);
-        pthread_join(tid, NULL);
+        pthread_join(tid, NULL); // wait
     }
 }
 int main(int argc, char *argv[]) { 
