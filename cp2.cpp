@@ -1,134 +1,206 @@
-#include <stdio.h>
-#include <stdlib.h>
+#include "iostream"
+#include "vector"
+#include "algorithm"
+using namespace std;
+#define F first
+#define S second
+#define int long long
+#define vii vector<pair<int,int>>
+const long long inf = 1e18;
+const int MAXN = 100005;
+int mom[MAXN],sz[MAXN];
+int find(int x) //To find the head of the family to whome which x belongs
+{
+	if(mom[x]==x)
+		return x;
+	return mom[x]=find(mom[x]);
+}
+void mk(int x)	//To create a node
+{
+	mom[x]=x;
+	sz[x]=1;
+}
+void jnt(int x,int y)//To joint two independent nodes x and y 
+{
+	int a=find(x),b=find(y);
+	if(a!=b)
+	{
+		if(sz[a]>sz[b])
+			swap(a,b);
+		mom[b]=a;
+		sz[a]+=sz[b];
+	}
+}
 
-int** simplify(int** a, int** b, int sign) // For matrix addition and subtraction
+struct edge 
 {
-    int m = sizeof(a) / sizeof(a[0]);
-    int **c = (int **)malloc(m * sizeof(int *)); 
-    for (int i = 0; i < m; i++) 
+    int u,v,wt;
+    bool operator<(const edge &other) const 
     {
-    	c[i] = (int *)malloc(m * sizeof(int));
+        return wt<other.wt;
     }
-    for (int i = 0; i < m; i++) 
+};
+
+int n,m,dep[MAXN];
+vii adj[MAXN];
+vector<edge> v,unvis,MST,SMST;
+int dp[MAXN][18], mx[MAXN][18];
+
+void sparse()
+{
+    for(int i=1;i<=17;i++)
     {
-        for (int j = 0; j < m; j++) 
-        {
-            c[i][j] = a[i][j] + (sign * b[i][j]);
-        }
+        for(int j=1;j<=n;j++) 
+            dp[i][j]=dp[dp[i][j-1]][j-1]; 
     }
-    return c;
+    for(int i=1;i<=17;i++)
+    {
+        for(int j=1;j<=n;j++)
+            mx[i][j]=max(mx[i][j-1],mx[dp[i][j-1]][j-1]);
+    }
 }
-int** split(int** a, int p, int q, int m) // For splitting the given 2-D Array
+
+void dfs(int x,int xd,int wt) 
 {
-    int **c = (int **)malloc(m * sizeof(int *)); 
-    for (int i = 0; i < m; i++) 
+    dp[x][0]=xd;
+    mx[x][0]=wt;
+    for (auto i:adj[x]) 
     {
-    	c[i] = (int *)malloc(m * sizeof(int));
-    }
-    for (int i = p; i < p + m; i++) 
-    {
-        for (int j = q; j < q + m; j++) 
+        if(i.F!=xd)
         {
-            c[i - p][j - q] = a[i][j];
-        }
-    }
-    return c;
-}
-void combine(int p, int q, int** res, int** quad, int m) // For merging the different parts of matrix
-{
-    for (int i = p; i < p + m; i++) 
-    {
-        for (int j = q; j < q + m; j++) 
-        {
-            res[i][j] = quad[i - p][j - q];
+            dep[i.F]=dep[x]+1;
+            dfs(i.F,x,i.S);
         }
     }
 }
-int** multiply(int** A, int** B, int n) // Strassen’s Matrix Multiplication Algorithm using Divide & combineonquer
+
+int lca(int x,int y)    // Using binary lifting (Logn)
 {
-    int **res = (int **)malloc(n * sizeof(int *)); 
-    for (int i = 0; i < n; i++) 
+    if(dep[x]<dep[y]) 
+        swap(x,y);
+    for(int i=16;i>=0;i--) 
     {
-    	res[i] = (int *)malloc(n * sizeof(int));
+        if(dep[dp[x][i]]>=dep[y]) 
+            x=dp[x][i];
     }
-    // base cases
-    if (n == 1) 
+    if(x==y) 
+        return x;
+    for(int i=16;i>=0;i--) 
     {
-        res[0][0] = A[0][0] * B[0][0];
-        return res;
-    } 
-    // four splits of a
-    int** a = split(A, 0, 0, n / 2);
-    int** b = split(A, 0, n / 2, n / 2);
-    int** c = split(A, n / 2, 0, n / 2);
-    int** d = split(A, n / 2, n / 2, n / 2);
-    // four splits of b
-    int** e = split(B, 0, 0, n / 2);
-    int** f = split(B, 0, n / 2, n / 2);
-    int** g = split(B, n / 2, 0, n / 2);
-    int** h = split(B, n / 2, n / 2, n / 2);
-    // solving 7 subproblems
-    int** p1 = multiply(a, simplify(f, h, -1), n / 2); // a, f - h
-    int** p2 = multiply(simplify(a, b, 1), h, n / 2);  // a + b, h
-    int** p3 = multiply(simplify(c, d, 1), e, n / 2);  // c + d, e
-    int** p4 = multiply(d, simplify(g, e, -1), n / 2); // d, g - e
-    int** p5 = multiply(simplify(a, d, 1), simplify(e, h, 1), n / 2); // a + d, e + h         
-    int** p6 = multiply(simplify(b, d, -1), simplify(g, h, 1), n / 2); // b - d, g - h
-    int** p7 = multiply(simplify(a, c, -1), simplify(e, f, 1), n / 2); // a - c, e + f
-    
-    int** q1 = simplify(p1, p2, 1); // p1 + p2
-    int** q2 = simplify(simplify(simplify(p5, p4, 1), p2, -1), p6, 1); // p5 + p4 - p2 + p6
-    int** q3 = simplify(p3, p4, 1); // p3 + p4 
-    int** q4 = simplify(simplify(simplify(p1, p5, 1), p3, -1), p7, -1); // p1 + p5 - p3 - p7
-    
-    combine(0, 0, res, q2, n / 2);
-    combine(0, n / 2, res, q1, n / 2);
-    combine(n / 2, 0, res, q3, n / 2);
-    combine(n / 2, n / 2, res, q4, n / 2);
+        if(dp[x][i]!=dp[y][i])
+        {
+            x=dp[x][i];
+            y=dp[y][i];
+        }
+    }
+    return dp[x][0];
+} 
+int solve(int x,int y) 
+{
+    int z=lca(x,y),res=0;
+    if(x!=z) 
+    {
+        for(int i=17;i>=0;i--) 
+        {
+            if(dep[dp[x][i]]>=dep[z]) 
+            {
+                res=max(res,mx[x][i]);
+                x=dp[x][i];
+            }
+        }
+    }
+    if(y!=z) 
+    {
+        for(int i=17;i>=0;i--) 
+        {
+            if(dep[dp[y][i]]>=dep[z]) 
+            {
+                res=max(res,mx[y][i]);
+                y=dp[y][i];
+            }
+        }
+    }
     return res;
 }
 
-signed main() {
-    int n; // n will be power of 2 only
-    scanf("%d", &n);
-
-    // declaring a and b matrices
-    int **a = (int **)malloc(n * sizeof(int *)); 
-    for (int i = 0; i < n; i++) 
+signed main() 
+{
+    cin>>n>> m;
+    v.resize(m);
+    for(int i=0;i<m;i++) 
+        cin>>v[i].u>>v[i].v>>v[i].wt;
+    sort(v.begin(),v.end());
+    for(int i=1;i<=n;i++)
+        mk(i);
+    int mst=0;
+    for(int i=0;i<m;i++) 
     {
-    	a[i] = (int *)malloc(n * sizeof(int));
-    }
-	int **b = (int **)malloc(n * sizeof(int *)); 
-    for (int i = 0; i < n; i++) 
-    {
-    	b[i] = (int *)malloc(n * sizeof(int));
-    }
-    // taking input from user a and b
-    for (int i = 0; i < n; i++) 
-    {
-        for (int j = 0; j < n; j++) 
+        if(find(v[i].u)!=find(v[i].v)) 
         {
-            scanf("%d", &a[i][j]);
+            jnt(v[i].u,v[i].v);
+            adj[v[i].u].push_back({v[i].v, v[i].wt});
+            adj[v[i].v].push_back({v[i].u, v[i].wt});
+            mst+=v[i].wt;
+            MST.push_back(v[i]);    // Finding MST using DSU
         }
+        else
+            unvis.push_back(v[i]);  // unvis consists of node not in MST
     }
-	for (int i = 0; i < n; i++) 
+    dfs(1, 0, 0);
+    sparse();   // For precomputation of dp and mx
+    int mn=inf,chk=-1;
+    if(unvis.empty())
     {
-        for (int j = 0; j < n; j++) 
+        cout<<"NO SECOND BEST MST FOUND\n";
+        return 0;
+    }
+    for(int i=0;i<unvis.size();i++) 
+    {
+        int diff=unvis[i].wt-solve(unvis[i].u,unvis[i].v);
+        if (diff<mn) 
+            chk=i;
+        mn=min(mn,diff);
+    }
+    if(mn==inf) 
+    {
+        cout<<"NO SECOND BEST MST FOUND\n";
+        return 0;
+    }
+    cout<<(mst+mn)<<'\n';
+    SMST.push_back(unvis[chk]);
+    int x=unvis[chk].u,y=unvis[chk].v;
+    int z=lca(x,y);
+    int mxv=unvis[chk].wt-mn;
+    int n1=0,n2=0;
+    // n1 = node,  n2 = parent node
+    while(x!=z and n1==0) 
+    {
+        if(mx[x][0]==mxv) 
         {
-            scanf("%d", &b[i][j]);
+            n1=dp[x][0];
+            n2=x;
         }
+        x=dp[x][0];
     }
-	// function call to generate the product
-    int** ab = multiply(a, b, n); 
-    // product of the two matrices
-    for (int i = 0; i < n; i++) 
+    while(y!=z and n1==0) 
     {
-        for (int j = 0; j < n; j++) 
+        if(mx[y][0]==mxv) 
         {
-        	printf("%d ", ab[i][j]);
-        } 
-        printf("\n");
+            n1=dp[y][0];
+            n2=y;
+        }
+        y=dp[y][0];
     }
+    if(n1>n2) 
+        swap(n1,n2);
+    for(int i=0;i<MST.size();i++) 
+    {
+        if(MST[i].u>MST[i].v) 
+            swap(MST[i].u,MST[i].v);
+        if(n1!=MST[i].u or n2!=MST[i].v) 
+            SMST.push_back(MST[i]);
+    }
+    for(auto i:SMST) 
+        cout<<i.u<<" "<<i.v<<" "<<i.wt<<'\n';
     return 0;
 }
-// XD
