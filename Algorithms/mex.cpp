@@ -36,6 +36,11 @@ void rem(int x)
 	m[x]--;
 }
 
+// Precomputation -> O(nlogn)
+// Add of number -> O(logn)
+// Removal of number -> O(logn)
+// Finding mex -> O(1)
+
 void solve()
 {
     cin>>n;
