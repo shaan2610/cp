@@ -63,11 +63,8 @@ float mindist(vector<pair<int,int>> &v,int l,int r)
     int n=v1.size();
     for(int i=0;i<n;i++)
     {
-        for(int j=i+1;j<n and abs(v1[i].S-v1[j].S)<d;j++)
-        {
-            if(calc(v1[i],v1[j])<d)
-                d=calc(v1[i],v1[j]);
-        }
+        for(int j=i+1;j<n and v1[j].S-v1[i].S<d;j++)
+            d=min(d,calc(v1[i],v1[j]));
     }
     return d;
 }
