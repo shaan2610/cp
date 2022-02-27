@@ -66,7 +66,7 @@ void pre2d()
     }
 }
 
-int pref(int i1,int j1,int i2,int j2)   // 0 based indexing
+int query(int i1,int j1,int i2,int j2)   // 0 based indexing
 {
     if(not i1 and not j1)
         return pre[i2][j2];
@@ -86,7 +86,7 @@ void solve()
             cin>>a[i][j];
     }
     pre2d();
-    cout<<pref(1,1,4,3);
+    cout<<query(1,1,4,3);
 }
 
 signed main()
