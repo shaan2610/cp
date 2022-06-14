@@ -78,6 +78,9 @@ public:
         }
         return st2.top();
     }
+    
+    // pop() and front() takes amortized O(1) time    
+    
     int pop() {
         if(isEmpty()) {
             return -1;
