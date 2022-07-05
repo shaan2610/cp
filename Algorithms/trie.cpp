@@ -55,7 +55,7 @@ int top(int x,int y)
 class trieNode {
 public:
     trieNode* links[26];
-    bool flag;
+    bool flag=false;
     bool containsKey(char c) {
         return (links[c-'a']!=NULL);
     }
