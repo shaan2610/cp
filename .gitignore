@@ -6,6 +6,7 @@ c_cpp_properties.json
 
 # Don't add test files.
 test*.cpp
+cp1.cpp
 
 # Don't add .txt files.
 *.txt
