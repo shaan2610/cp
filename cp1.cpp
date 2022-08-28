@@ -142,4 +142,4 @@ signed main() {
 
     cout << "SJF Scheduling is best in terms of Average Waiting Time with 3.2 milliseconds.\n";
     return 0;
-}
+} 
