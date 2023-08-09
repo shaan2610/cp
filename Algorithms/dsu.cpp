@@ -64,8 +64,8 @@ struct dsu{
         {
             if(sze[a]>sze[b])
                 swap(a,b);
-            mom[b]=a;
-            sze[a]+=sze[b];
+            mom[a]=b;
+            sze[b]+=sze[a];
         }
     }
 };
