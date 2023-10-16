@@ -36,10 +36,12 @@ int top(int x,int y)
 struct segtree
 {
     vi t,lazy;
+    int n;
     segtree(int x)
     {
-        t.resize(4*x,0);
-        lazy.resize(4*x,0);
+        t.resize(4*x+5,0);
+        lazy.resize(4*x+5,0);
+        n = x;
     }
     void rem(int st,int en,int v)
     {
@@ -67,8 +69,12 @@ struct segtree
         update(st,mid,2*v,idx,val);
         update(mid+1,en,2*v+1,idx,val);
         t[v]=t[2*v]+t[2*v+1];
-
     }
+ 
+    void update(int idx, int val) {
+        update(0, n-1, 1, idx, val);
+    }
+ 
     int sum(int st,int en,int v,int l,int r)
     {
         rem(st,en,v);
@@ -81,6 +87,11 @@ struct segtree
         int mid=(st+en)/2;
         return sum(st,mid,2*v,l,r)+sum(mid+1,en,2*v+1,l,r);
     }
+ 
+    int sum(int l, int r) {
+        return (sum(0, n-1, 1, l, r) % 26);
+    }
+ 
     void ranadd(int st,int en,int v,int l,int r,int val)
     {
         rem(st,en,v);
@@ -99,30 +110,33 @@ struct segtree
         ranadd(mid+1,en,2*v+1,l,r,val);
         t[v]=t[2*v]+t[2*v+1];
     }
+ 
+    void ranadd(int l, int r, int val) {
+        ranadd(0, n-1, 1, l, r, val);
+    }
 };
-
 
 void solve()
 {
     int n;
     cin>>n;
-    segtree st(n+5);
+    segtree st(n);
     vi a(n);
     for(int i=0;i<n;i++)
     {
         cin>>a[i];
-        st.update(0,n-1,1,i,a[i]);
+        st.update(i,a[i]);
     }
     for(int i=0;i<n;i++)
-        cout<<st.sum(0,n-1,1,i,i)<<" ";
+        cout<<st.sum(i,i)<<" ";
     cout<<endl;
-    st.ranadd(0,n-1,1,2,5,-1);
+    st.ranadd(2,5,-1);
     for(int i=0;i<n;i++)
-        cout<<st.sum(0,n-1,1,i,i)<<" ";
+        cout<<st.sum(i,i)<<" ";
     cout<<endl;
-    st.update(0,n-1,1,3,4);
+    st.update(3,4);
     for(int i=0;i<n;i++)
-        cout<<st.sum(0,n-1,1,i,i)<<" ";
+        cout<<st.sum(i,i)<<" ";
 }
 
 signed main()
