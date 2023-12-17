@@ -1,7 +1,7 @@
 //*********************************COMPERATOR***********************************\\
 struct srt
 {
-	bool operator() (pii a,pii b){
+	bool operator() (pii a,pii b) const {
 		return ((a.F - a.F/2)*a.S) > ((b.F - b.F/2)*b.S);
 	}
 };
